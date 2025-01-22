@@ -34,6 +34,7 @@
         "test": "./tests/"
     },
     "scripts": {},
-    "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "typescript": "^5.7.3"
+    }
 }
