@@ -43,3 +43,7 @@ tags
 # Environment #
 ## General ##
 .envrc
+
+# Packages #
+## NodeJS ##
+node_modules/
