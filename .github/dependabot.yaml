@@ -15,7 +15,6 @@ updates:
     package-ecosystem: github-actions
     labels:
       - Dependency
-    versioning-strategy: increase
     schedule:
       interval: weekly
       day: wednesday
