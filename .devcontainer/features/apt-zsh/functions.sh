@@ -441,7 +441,7 @@ run_as_remote_user_quietly () {
 # Run the first argument as the remote user using an interactive/login shell.
 run_as_interactive_remote_user () {
     write_info "Running command '$1' as user '${_REMOTE_USER}' using an interactive shell...";
-    run_as_interactive_remote_user "$1";
+    run_as_interactive_remote_user_quietly "$1";
     if [ $? -ne 0 ]; then
         return 1;
     fi
