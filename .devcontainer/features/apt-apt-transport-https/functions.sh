@@ -351,20 +351,43 @@ apt_install_or_upgrade_multiple () {
     return 0;
 }
 
+# Get the home directory of the remote user.
+get_remote_user_home () {
+    write_debug "Getting home directory for remote user '${_REMOTE_USER}'...";
+    run_as_interactive_remote_user_quietly 'echo $HOME';
+    if [ $? -ne 0 ]; then
+        write_error "Failed to get home directory for remote user!";
+        return 1;
+    fi
+    return 0;
+}
+
 # Install the first argument into the remote user's shell profiles.
 install_to_shell_profiles () {
-    if [ -f "~${_REMOTE_USER}/.zshrc" ]; then
-        write_info "Installing to '~${_REMOTE_USER}/.zshrc'...";
-        echo "$1" > "~${_REMOTE_USER}/.zshrc";
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    if [ $? -ne 0 ]; then
+        write_error "Failed install config to remote user shell profiles!";
+        return 1;
     fi
-    if [ -f "~${_REMOTE_USER}/.bashrc" ]; then
-        write_info "Installing to '~${_REMOTE_USER}/.bashrc'...";
-        echo "$1" > "~${_REMOTE_USER}/.bashrc";
+    write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.zshrc'...";
+    if [ -f "${REMOTE_USER_HOME}/.zshrc" ]; then
+        echo "$1" >> "${REMOTE_USER_HOME}/.zshrc";
+    else
+        echo "$1" > "${REMOTE_USER_HOME}/.zshrc";
     fi
-    if [ -f "~${_REMOTE_USER}/.profile" ]; then
-        write_info "Installing to '~${_REMOTE_USER}/.profile'...";
-        echo "$1" > "~${_REMOTE_USER}/.profile";
+    write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.bashrc'...";
+    if [ -f "${REMOTE_USER_HOME}/.bashrc" ]; then
+        echo "$1" >> "${REMOTE_USER_HOME}/.zshrc";
+    else
+        echo "$1" > "${REMOTE_USER_HOME}/.bashrc";
     fi
+    write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.profile'...";
+    if [ -f "${REMOTE_USER_HOME}/.profile" ]; then
+        echo "$1" >> "${REMOTE_USER_HOME}/.profile";
+    else
+        echo "$1" > "${REMOTE_USER_HOME}/.profile";
+    fi
+    return 0;
 }
 
 # Add the first argument to the PATH environment variable for all shells.
@@ -378,6 +401,7 @@ append_to_path () {
         return 1;
     fi
     install_to_shell_profiles "export PATH=\"${REMOTE_PATHS}:$1\"";
+    return 0;
 }
 
 # Add the first argument to the PATH environment variable for all shells.
@@ -391,11 +415,21 @@ prepend_to_path () {
         return 1;
     fi
     install_to_shell_profiles "export PATH=\"$1:${REMOTE_PATHS}\"";
+    return 0;
 }
 
 # Run the first argument as the remote user using a shell.
 run_as_remote_user () {
     write_info "Running command '$1' as user '${_REMOTE_USER}' using a shell...";
+    run_as_remote_user_quietly "$1";
+    if [ $? -ne 0 ]; then
+        return 1;
+    fi
+    return 0;
+}
+
+# Run the first argument as the remote user using a shell without logging.
+run_as_remote_user_quietly () {
     su ${_REMOTE_USER} -c "$1";
     if [ $? -ne 0 ]; then
         write_error "Failed to run command!";
@@ -407,6 +441,15 @@ run_as_remote_user () {
 # Run the first argument as the remote user using an interactive/login shell.
 run_as_interactive_remote_user () {
     write_info "Running command '$1' as user '${_REMOTE_USER}' using an interactive shell...";
+    run_as_interactive_remote_user "$1";
+    if [ $? -ne 0 ]; then
+        return 1;
+    fi
+    return 0;
+}
+
+# Run the first argument as the remote user using an interactive/login shell without logging.
+run_as_interactive_remote_user_quietly () {
     su ${_REMOTE_USER} -lc "$1";
     if [ $? -ne 0 ]; then
         write_error "Failed to run command!";
