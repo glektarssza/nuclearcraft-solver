@@ -3,7 +3,8 @@
 # Import our function library.
 . ./functions.sh;
 
-run_as_interactive_remote_user "curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell" && \
+run_as_interactive_remote_user "curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --install-dir ~/.fnm" && \
+prepend_to_path '$HOME/.fnm' && \
 install_to_shell_profiles 'eval "$(fnm env --use-on-cd)"';
 
 if [ $? -ne 0 ]; then
