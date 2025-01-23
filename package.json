@@ -31,7 +31,6 @@
         "url": "https://github.com/glektarssza/nuclearcraft-solver"
     },
     "type": "module",
-    "packageManager": "pnpm@9.15.4+",
     "directories": {
         "doc": "./docs/",
         "example": "./examples/",
