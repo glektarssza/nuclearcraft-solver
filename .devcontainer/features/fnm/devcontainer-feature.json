@@ -12,7 +12,8 @@
     ],
     "dependsOn": {
         "./features/apt-curl": {},
-        "./features/apt-unzip": {}
+        "./features/apt-unzip": {},
+        "./features/apt-procps": {}
     },
     "options": {
         "install_latest": {
