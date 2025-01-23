@@ -12,5 +12,8 @@
         "debian",
         "ubuntu",
         "linux"
-    ]
+    ],
+    "dependsOn": {
+        "./features/apt-ca-certificates": {}
+    }
 }
