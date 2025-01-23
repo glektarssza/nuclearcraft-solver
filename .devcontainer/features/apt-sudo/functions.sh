@@ -367,9 +367,35 @@ install_to_shell_profiles () {
     fi
 }
 
+# Add the first argument to the PATH environment variable for all shells.
+append_to_path () {
+    write_info "Appending '$1' to PATH of user '${_REMOTE_USER}'...";
+    local REMOTE_PATHS="$(run_as_interactive_remote_user 'echo $PATH')";
+    # Erase PATH from remote user configs.
+    run_as_remote_user "sed -i '/#/! s/.*PATH=.*(\\\\n?)//' ~/.zshrc ~/.bashrc ~/.profile";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to erase old PATH variable(s)!";
+        return 1;
+    fi
+    install_to_shell_profiles "export PATH=\"${REMOTE_PATHS}:$1\"";
+}
+
+# Add the first argument to the PATH environment variable for all shells.
+prepend_to_path () {
+    write_info "Appending '$1' to PATH of user '${_REMOTE_USER}'...";
+    local REMOTE_PATHS="$(run_as_interactive_remote_user 'echo $PATH')";
+    # Erase PATH from remote user configs.
+    run_as_remote_user "sed -i '/#/! s/.*PATH=.*(\\\\n?)//' ~/.zshrc ~/.bashrc ~/.profile";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to erase old PATH variable(s)!";
+        return 1;
+    fi
+    install_to_shell_profiles "export PATH=\"$1:${REMOTE_PATHS}\"";
+}
+
 # Run the first argument as the remote user using a shell.
 run_as_remote_user () {
-    write_info "Running '$1' as '${_REMOTE_USER}' using a shell...";
+    write_info "Running command '$1' as user '${_REMOTE_USER}' using a shell...";
     su ${_REMOTE_USER} -c "$1";
     if [ $? -ne 0 ]; then
         write_error "Failed to run command!";
@@ -380,7 +406,7 @@ run_as_remote_user () {
 
 # Run the first argument as the remote user using an interactive/login shell.
 run_as_interactive_remote_user () {
-    write_info "Running '$1' as '${_REMOTE_USER}' using an interactive shell...";
+    write_info "Running command '$1' as user '${_REMOTE_USER}' using an interactive shell...";
     su ${_REMOTE_USER} -lc "$1";
     if [ $? -ne 0 ]; then
         write_error "Failed to run command!";
