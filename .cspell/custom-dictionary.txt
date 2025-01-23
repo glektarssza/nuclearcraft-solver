@@ -3,4 +3,5 @@ eslintcache
 noarchive
 nuclearcraft
 unarchiver
+venv
 vite
