@@ -350,3 +350,41 @@ apt_install_or_upgrade_multiple () {
     write_info "Mass installed or upgraded packages '$PACKAGES' via apt";
     return 0;
 }
+
+# Install the first argument into the remote user's shell profiles.
+install_to_shell_profiles () {
+    if [ -f "~${_REMOTE_USER}/.zshrc" ]; then
+        write_info "Installing to '~${_REMOTE_USER}/.zshrc'...";
+        echo "$1" > "~${_REMOTE_USER}/.zshrc";
+    fi
+    if [ -f "~${_REMOTE_USER}/.bashrc" ]; then
+        write_info "Installing to '~${_REMOTE_USER}/.bashrc'...";
+        echo "$1" > "~${_REMOTE_USER}/.bashrc";
+    fi
+    if [ -f "~${_REMOTE_USER}/.profile" ]; then
+        write_info "Installing to '~${_REMOTE_USER}/.profile'...";
+        echo "$1" > "~${_REMOTE_USER}/.profile";
+    fi
+}
+
+# Run the first argument as the remote user using a shell.
+run_as_remote_user () {
+    write_info "Running '$1' as '${_REMOTE_USER}' using a shell...";
+    su ${_REMOTE_USER} -c "$1";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to run command!";
+        return 1;
+    fi
+    return 0;
+}
+
+# Run the first argument as the remote user using an interactive/login shell.
+run_as_interactive_remote_user () {
+    write_info "Running '$1' as '${_REMOTE_USER}' using an interactive shell...";
+    su ${_REMOTE_USER} -lc "$1";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to run command!";
+        return 1;
+    fi
+    return 0;
+}

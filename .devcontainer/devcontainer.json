@@ -23,14 +23,18 @@
         "./features/pre-commit": {},
         "./features/oh-my-zsh": {
             "theme": "blinks_custom",
-            "plugins": "debian git git-lfs"
+            "plugins": "debian git git-lfs fnm node npm"
         },
         "./features/apt-git": {},
         "./features/apt-git-lfs": {},
-        "./features/apt-sudo": {}
+        "./features/apt-sudo": {},
+        "./features/fnm": {}
     },
     "overrideFeatureInstallOrder": [
         "./features/create-user",
+        "./features/apt-curl",
+        "./features/apt-unzip",
+        "./features/fnm",
         "./features/oh-my-zsh",
         "./features/pre-commit"
     ]

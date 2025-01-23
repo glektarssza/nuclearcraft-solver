@@ -5,6 +5,9 @@
     "description": "Install the wget package using apt.",
     "keywords": [
         "wget",
+        "download",
+        "downloader",
+        "fetcher",
         "apt",
         "debian",
         "ubuntu",
