@@ -32,10 +32,8 @@
     },
     "overrideFeatureInstallOrder": [
         "./features/create-user",
-        "./features/apt-curl",
-        "./features/apt-unzip",
-        "./features/fnm",
         "./features/oh-my-zsh",
+        "./features/fnm",
         "./features/pre-commit"
     ]
 }
