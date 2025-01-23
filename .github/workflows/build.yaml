@@ -66,5 +66,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{inputs.build-config}}
-          path: ./app/dist/
+          path: ./dist/
           if-no-files-found: error
