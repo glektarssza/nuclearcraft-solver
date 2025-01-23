@@ -1,0 +1,16 @@
+{
+    "id": "apt-wget",
+    "version": "0.0.1",
+    "name": "apt-wget",
+    "description": "Install the wget package using apt.",
+    "keywords": [
+        "wget",
+        "apt",
+        "debian",
+        "ubuntu",
+        "linux"
+    ],
+    "dependsOn": {
+        "./features/apt-ca-certificates": {}
+    }
+}
