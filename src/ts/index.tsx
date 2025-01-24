@@ -1,5 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {App} from './components';
 
 const findAppRoot = (): HTMLElement => {
     let e = document.getElementById('app');
@@ -14,4 +15,4 @@ const findAppRoot = (): HTMLElement => {
 };
 
 const root = createRoot(findAppRoot());
-root.render(<h1>Hello world!</h1>);
+root.render(<App />);
