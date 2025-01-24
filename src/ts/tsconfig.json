@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "exactOptionalPropertyTypes": false,
+        "jsx": "react",
         "noEmit": false,
         "types": []
     },
