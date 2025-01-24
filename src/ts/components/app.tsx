@@ -3,7 +3,7 @@ import React, {type FunctionComponent} from 'react';
 /**
  * The properties for the {@link App} component.
  */
-export interface AppProps {}
+export type AppProps = object;
 
 /**
  * The main application component.
