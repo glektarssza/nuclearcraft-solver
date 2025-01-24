@@ -57,12 +57,18 @@
         "rebuild:prod": "pnpm run clean:prod && pnpm run build:prod",
         "rebuild:dev": "pnpm run clean:dev && pnpm run build:dev"
     },
+    "dependencies": {
+        "bootstrap": "^5.3.3",
+        "react-bootstrap": "^2.10.8"
+    },
     "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@faker-js/faker": "^9.4.0",
         "@rollup/plugin-replace": "^6.0.2",
         "@types/eslint__js": "^8.42.3",
         "@types/node": "^22.10.7",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
         "@vitest/browser": "^3.0.3",
         "@vitest/coverage-istanbul": "^3.0.3",
         "@vitest/ui": "^3.0.3",
@@ -71,6 +77,8 @@
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-tsdoc": "^0.4.0",
         "prettier": "^3.4.2",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
         "sass": "^1.83.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3",

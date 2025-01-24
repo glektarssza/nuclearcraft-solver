@@ -16,7 +16,7 @@ const config = defineConfig(({mode}) => {
     const conf: ViteUserConfig = {
         mode,
         resolve: {
-            extensions: ['.ts', '.js']
+            extensions: ['.tsx', '.ts', '.jsx', '.js']
         },
         base: mode !== 'development' ? '/nuclearcraft-solver/' : '/',
         build: {

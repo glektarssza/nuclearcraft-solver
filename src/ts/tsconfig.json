@@ -2,11 +2,14 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "exactOptionalPropertyTypes": false,
+        "jsx": "react",
         "noEmit": false,
         "types": []
     },
     "include": [
         "./*.ts",
-        "./**/*.ts"
+        "./*.tsx",
+        "./**/*.ts",
+        "./**/*.tsx"
     ]
 }
