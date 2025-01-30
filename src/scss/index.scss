@@ -1,0 +1,29 @@
+//-- Import main Bootstrap functions first.
+@import '../../node_modules/bootstrap/scss/functions';
+
+//-- Override default variables here
+
+//-- Import Bootstrap variables
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/variables-dark';
+
+//-- Override default maps here
+
+//-- Import the rest of Bootstrap's required parts
+@import '../../node_modules/bootstrap/scss/maps';
+@import '../../node_modules/bootstrap/scss/mixins';
+@import '../../node_modules/bootstrap/scss/root';
+
+//-- Import optional components of Bootstrap
+@import '../../node_modules/bootstrap/scss/utilities';
+@import '../../node_modules/bootstrap/scss/reboot';
+@import '../../node_modules/bootstrap/scss/type';
+@import '../../node_modules/bootstrap/scss/images';
+@import '../../node_modules/bootstrap/scss/containers';
+@import '../../node_modules/bootstrap/scss/grid';
+@import '../../node_modules/bootstrap/scss/helpers';
+
+//-- Import utilities API last to generate some things automatically
+@import '../../node_modules/bootstrap/scss/utilities/api';
+
+//-- Custom code comes last!
