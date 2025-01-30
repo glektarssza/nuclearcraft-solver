@@ -351,25 +351,135 @@ apt_install_or_upgrade_multiple () {
     return 0;
 }
 
-# Install the first argument into the remote user's shell profiles.
+# Get the home directory of the remote user.
+get_remote_user_home () {
+    write_debug "Getting home directory for remote user '${_REMOTE_USER}'...";
+    run_as_interactive_remote_user_quietly 'echo $HOME';
+    if [ $? -ne 0 ]; then
+        write_error "Failed to get home directory for remote user!";
+        return 1;
+    fi
+    return 0;
+}
+
+# Install the first argument into the remote user's ZSH profile.
+install_to_zsh_profile () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.zshrc'...";
+    if [ -f "${REMOTE_USER_HOME}/.zshrc" ]; then
+        echo "$1" >> "${REMOTE_USER_HOME}/.zshrc";
+    else
+        echo "$1" > "${REMOTE_USER_HOME}/.zshrc";
+    fi
+    return 0;
+}
+
+# Install the first argument into the remote user's Bash profile.
+install_to_bash_profile () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.bashrc'...";
+    if [ -f "${REMOTE_USER_HOME}/.bashrc" ]; then
+        echo "$1" >> "${REMOTE_USER_HOME}/.bashrc";
+    else
+        echo "$1" > "${REMOTE_USER_HOME}/.bashrc";
+    fi
+    return 0;
+}
+
+# Install the first argument into the remote user's sh profile.
+install_to_sh_profile () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.profile'...";
+    if [ -f "${REMOTE_USER_HOME}/.profile" ]; then
+        echo "$1" >> "${REMOTE_USER_HOME}/.profile";
+    else
+        echo "$1" > "${REMOTE_USER_HOME}/.profile";
+    fi
+    return 0;
+}
+
+# Install the first argument into all the remote user's shell profiles.
 install_to_shell_profiles () {
-    if [ -f "~${_REMOTE_USER}/.zshrc" ]; then
-        write_info "Installing to '~${_REMOTE_USER}/.zshrc'...";
-        echo "$1" > "~${_REMOTE_USER}/.zshrc";
+    if [ $? -ne 0 ]; then
+        write_error "Failed install config to remote user shell profiles!";
+        return 1;
     fi
-    if [ -f "~${_REMOTE_USER}/.bashrc" ]; then
-        write_info "Installing to '~${_REMOTE_USER}/.bashrc'...";
-        echo "$1" > "~${_REMOTE_USER}/.bashrc";
+    install_to_zsh_profile "$1"
+    if [ $? -ne 0 ]; then
+        write_error "Failed to install config to remote user ZSH profile!";
+        return 1;
     fi
-    if [ -f "~${_REMOTE_USER}/.profile" ]; then
-        write_info "Installing to '~${_REMOTE_USER}/.profile'...";
-        echo "$1" > "~${_REMOTE_USER}/.profile";
+    install_to_bash_profile "$1"
+    if [ $? -ne 0 ]; then
+        write_error "Failed to install config to remote user Bash profile!";
+        return 1;
     fi
+    install_to_sh_profile "$1"
+    if [ $? -ne 0 ]; then
+        write_error "Failed to install config to remote user sh profile!";
+        return 1;
+    fi
+    return 0;
+}
+
+# Add the first argument to the PATH environment variable for all shells.
+append_to_path () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Appending '$1' to PATH of user '${_REMOTE_USER}'...";
+    # Append path to PATH variable in remote user configs.
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.zshrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2\\\\3:$1\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"\$PATH:$1\\\"\";}}' ${REMOTE_USER_HOME}/.zshrc > ${REMOTE_USER_HOME}/.zshrc.tmp && mv ${REMOTE_USER_HOME}/.zshrc.tmp ${REMOTE_USER_HOME}/.zshrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.bashrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2\\\\3:$1\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"\$PATH:$1\\\"\";}}' ${REMOTE_USER_HOME}/.bashrc > ${REMOTE_USER_HOME}/.bashrc.tmp && mv ${REMOTE_USER_HOME}/.bashrc.tmp ${REMOTE_USER_HOME}/.bashrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.profile ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2\\\\3:$1\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"\$PATH:$1\\\"\";}}' ${REMOTE_USER_HOME}/.profile > ${REMOTE_USER_HOME}/.profile.tmp && mv ${REMOTE_USER_HOME}/.profile.tmp ${REMOTE_USER_HOME}/.profile; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    return 0;
+}
+
+# Add the first argument to the PATH environment variable for all shells.
+prepend_to_path () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Prepending '$1' to PATH of user '${_REMOTE_USER}'...";
+    # Prepend path to PATH variable in remote user configs.
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.zshrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2$1:\\\\3\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"$1:\$PATH\\\"\";}}' ${REMOTE_USER_HOME}/.zshrc > ${REMOTE_USER_HOME}/.zshrc.tmp && mv ${REMOTE_USER_HOME}/.zshrc.tmp ${REMOTE_USER_HOME}/.zshrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.bashrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2$1:\\\\3\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"$1:\$PATH\\\"\";}}' ${REMOTE_USER_HOME}/.bashrc > ${REMOTE_USER_HOME}/.bashrc.tmp && mv ${REMOTE_USER_HOME}/.bashrc.tmp ${REMOTE_USER_HOME}/.bashrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.profile ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2$1:\\\\3\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"$1:\$PATH\\\"\";}}' ${REMOTE_USER_HOME}/.profile > ${REMOTE_USER_HOME}/.profile.tmp && mv ${REMOTE_USER_HOME}/.profile.tmp ${REMOTE_USER_HOME}/.profile; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to prepend new path to PATH variable!";
+        return 1;
+    fi
+    return 0;
 }
 
 # Run the first argument as the remote user using a shell.
 run_as_remote_user () {
-    write_info "Running '$1' as '${_REMOTE_USER}' using a shell...";
+    write_info "Running command '$1' as user '${_REMOTE_USER}' using a shell...";
+    run_as_remote_user_quietly "$1";
+    if [ $? -ne 0 ]; then
+        return 1;
+    fi
+    return 0;
+}
+
+# Run the first argument as the remote user using a shell without logging.
+run_as_remote_user_quietly () {
     su ${_REMOTE_USER} -c "$1";
     if [ $? -ne 0 ]; then
         write_error "Failed to run command!";
@@ -380,7 +490,16 @@ run_as_remote_user () {
 
 # Run the first argument as the remote user using an interactive/login shell.
 run_as_interactive_remote_user () {
-    write_info "Running '$1' as '${_REMOTE_USER}' using an interactive shell...";
+    write_info "Running command '$1' as user '${_REMOTE_USER}' using an interactive shell...";
+    run_as_interactive_remote_user_quietly "$1";
+    if [ $? -ne 0 ]; then
+        return 1;
+    fi
+    return 0;
+}
+
+# Run the first argument as the remote user using an interactive/login shell without logging.
+run_as_interactive_remote_user_quietly () {
     su ${_REMOTE_USER} -lc "$1";
     if [ $? -ne 0 ]; then
         write_error "Failed to run command!";
