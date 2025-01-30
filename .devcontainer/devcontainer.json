@@ -15,6 +15,10 @@
         "storage": "32gb"
     },
     "features": {
+        "./features/apt-locales": {
+            "default_locale": "en_CA.UTF-8"
+        },
+        "./features/apt-libarchive-tools": {},
         "./features/create-user": {
             "username": "vscode"
         },

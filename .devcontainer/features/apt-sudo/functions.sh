@@ -362,25 +362,33 @@ get_remote_user_home () {
     return 0;
 }
 
-# Install the first argument into the remote user's shell profiles.
-install_to_shell_profiles () {
+# Install the first argument into the remote user's ZSH profile.
+install_to_zsh_profile () {
     local REMOTE_USER_HOME="$(get_remote_user_home)";
-    if [ $? -ne 0 ]; then
-        write_error "Failed install config to remote user shell profiles!";
-        return 1;
-    fi
     write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.zshrc'...";
     if [ -f "${REMOTE_USER_HOME}/.zshrc" ]; then
         echo "$1" >> "${REMOTE_USER_HOME}/.zshrc";
     else
         echo "$1" > "${REMOTE_USER_HOME}/.zshrc";
     fi
+    return 0;
+}
+
+# Install the first argument into the remote user's Bash profile.
+install_to_bash_profile () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
     write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.bashrc'...";
     if [ -f "${REMOTE_USER_HOME}/.bashrc" ]; then
-        echo "$1" >> "${REMOTE_USER_HOME}/.zshrc";
+        echo "$1" >> "${REMOTE_USER_HOME}/.bashrc";
     else
         echo "$1" > "${REMOTE_USER_HOME}/.bashrc";
     fi
+    return 0;
+}
+
+# Install the first argument into the remote user's sh profile.
+install_to_sh_profile () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
     write_info "Installing config '$1' to '${REMOTE_USER_HOME}/.profile'...";
     if [ -f "${REMOTE_USER_HOME}/.profile" ]; then
         echo "$1" >> "${REMOTE_USER_HOME}/.profile";
@@ -390,31 +398,73 @@ install_to_shell_profiles () {
     return 0;
 }
 
-# Add the first argument to the PATH environment variable for all shells.
-append_to_path () {
-    write_info "Appending '$1' to PATH of user '${_REMOTE_USER}'...";
-    local REMOTE_PATHS="$(run_as_interactive_remote_user 'echo $PATH')";
-    # Erase PATH from remote user configs.
-    run_as_remote_user "sed -i '/#/! s/.*PATH=.*(\\\\n?)//' ~/.zshrc ~/.bashrc ~/.profile";
+# Install the first argument into all the remote user's shell profiles.
+install_to_shell_profiles () {
     if [ $? -ne 0 ]; then
-        write_error "Failed to erase old PATH variable(s)!";
+        write_error "Failed install config to remote user shell profiles!";
         return 1;
     fi
-    install_to_shell_profiles "export PATH=\"${REMOTE_PATHS}:$1\"";
+    install_to_zsh_profile "$1"
+    if [ $? -ne 0 ]; then
+        write_error "Failed to install config to remote user ZSH profile!";
+        return 1;
+    fi
+    install_to_bash_profile "$1"
+    if [ $? -ne 0 ]; then
+        write_error "Failed to install config to remote user Bash profile!";
+        return 1;
+    fi
+    install_to_sh_profile "$1"
+    if [ $? -ne 0 ]; then
+        write_error "Failed to install config to remote user sh profile!";
+        return 1;
+    fi
+    return 0;
+}
+
+# Add the first argument to the PATH environment variable for all shells.
+append_to_path () {
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Appending '$1' to PATH of user '${_REMOTE_USER}'...";
+    # Append path to PATH variable in remote user configs.
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.zshrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2\\\\3:$1\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"\$PATH:$1\\\"\";}}' ${REMOTE_USER_HOME}/.zshrc > ${REMOTE_USER_HOME}/.zshrc.tmp && mv ${REMOTE_USER_HOME}/.zshrc.tmp ${REMOTE_USER_HOME}/.zshrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.bashrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2\\\\3:$1\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"\$PATH:$1\\\"\";}}' ${REMOTE_USER_HOME}/.bashrc > ${REMOTE_USER_HOME}/.bashrc.tmp && mv ${REMOTE_USER_HOME}/.bashrc.tmp ${REMOTE_USER_HOME}/.bashrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.profile ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2\\\\3:$1\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"\$PATH:$1\\\"\";}}' ${REMOTE_USER_HOME}/.profile > ${REMOTE_USER_HOME}/.profile.tmp && mv ${REMOTE_USER_HOME}/.profile.tmp ${REMOTE_USER_HOME}/.profile; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
     return 0;
 }
 
 # Add the first argument to the PATH environment variable for all shells.
 prepend_to_path () {
-    write_info "Appending '$1' to PATH of user '${_REMOTE_USER}'...";
-    local REMOTE_PATHS="$(run_as_interactive_remote_user 'echo $PATH')";
-    # Erase PATH from remote user configs.
-    run_as_remote_user "sed -i '/#/! s/.*PATH=.*(\\\\n?)//' ~/.zshrc ~/.bashrc ~/.profile";
+    local REMOTE_USER_HOME="$(get_remote_user_home)";
+    write_info "Prepending '$1' to PATH of user '${_REMOTE_USER}'...";
+    # Prepend path to PATH variable in remote user configs.
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.zshrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2$1:\\\\3\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"$1:\$PATH\\\"\";}}' ${REMOTE_USER_HOME}/.zshrc > ${REMOTE_USER_HOME}/.zshrc.tmp && mv ${REMOTE_USER_HOME}/.zshrc.tmp ${REMOTE_USER_HOME}/.zshrc; fi";
     if [ $? -ne 0 ]; then
-        write_error "Failed to erase old PATH variable(s)!";
+        write_error "Failed to append new path to PATH variable!";
         return 1;
     fi
-    install_to_shell_profiles "export PATH=\"$1:${REMOTE_PATHS}\"";
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.bashrc ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2$1:\\\\3\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"$1:\$PATH\\\"\";}}' ${REMOTE_USER_HOME}/.bashrc > ${REMOTE_USER_HOME}/.bashrc.tmp && mv ${REMOTE_USER_HOME}/.bashrc.tmp ${REMOTE_USER_HOME}/.bashrc; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to append new path to PATH variable!";
+        return 1;
+    fi
+    run_as_remote_user "if [ -f ${REMOTE_USER_HOME}/.profile ]; then gawk 'BEGIN {foundPath = false;} {if (!/#/ && /PATH=/) {\$0 = gensub(/^(.*)PATH=(\")?(.*)(\")?\$/, \"\\\\1PATH=\\\\2$1:\\\\3\\\\4\", \$0); foundPath = true;} print;} END {if (!foundPath) {print \"export PATH=\\\"$1:\$PATH\\\"\";}}' ${REMOTE_USER_HOME}/.profile > ${REMOTE_USER_HOME}/.profile.tmp && mv ${REMOTE_USER_HOME}/.profile.tmp ${REMOTE_USER_HOME}/.profile; fi";
+    if [ $? -ne 0 ]; then
+        write_error "Failed to prepend new path to PATH variable!";
+        return 1;
+    fi
     return 0;
 }
 

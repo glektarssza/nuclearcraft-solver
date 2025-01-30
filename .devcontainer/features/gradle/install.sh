@@ -10,12 +10,8 @@ rm -rf /opt/gradle/* && \
 # Download version of Gradle to install.
 wget https://services.gradle.org/versions/current -O - | jq --raw-output .version | xargs -I V wget --directory-prefix=/opt/gradle/ https://services.gradle.org/distributions/gradle-V-all.zip && \
 # Unpack version of Gradle to install.
-wget https://services.gradle.org/versions/current -O - | jq --raw-output .version | xargs -I V 7z x -o/opt/gradle/ /opt/gradle/gradle-V-all.zip && \
+bsdtar xvf /opt/gradle/*.zip -C /opt/gradle/ --strip-components 1 && \
 # Remove downloaded Gradle zip.
-wget https://services.gradle.org/versions/current -O - | jq --raw-output .version | xargs -I V rm /opt/gradle/gradle-V-all.zip && \
-# Move unpacked files to main install location.
-wget https://services.gradle.org/versions/current -O - | jq --raw-output .version | xargs -I V find "/opt/gradle/gradle-V/" -mindepth 1 -maxdepth 1 -exec mv {} /opt/gradle/ \; && \
-# Remove old unpacked Gradle directory.
-wget https://services.gradle.org/versions/current -O - | jq --raw-output .version | xargs -I V rm -r /opt/gradle/gradle-V/ && \
+rm /opt/gradle/*.zip && \
 # Add Gradle to path.
 prepend_to_path '/opt/gradle/bin';
