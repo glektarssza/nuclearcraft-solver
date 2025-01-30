@@ -18,7 +18,7 @@ fi
 write_info "Setting up locales to generated...";
 for LOCALE in $GENERATE_LOCALES; do
     write_info "Marking '$LOCALE' to be generated...";
-    echo $LOCALE >> /etc/locale.gen;
+    echo "$LOCALE UTF-8" >> /etc/locale.gen;
 done
 write_info "Set up locales to generated";
 
