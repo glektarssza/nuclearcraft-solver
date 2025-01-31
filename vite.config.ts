@@ -8,7 +8,6 @@ import path from 'node:path';
 //-- NPM Packages
 import {svelte} from '@sveltejs/vite-plugin-svelte';
 import replacePlugin from '@rollup/plugin-replace';
-import {sveltePreprocess} from 'svelte-preprocess';
 import {type ViteUserConfig, defineConfig} from 'vitest/config';
 
 /**
@@ -64,42 +63,14 @@ const config = defineConfig(({mode}) => {
         plugins: [
             svelte({
                 compilerOptions: {
+                    runes: true,
                     dev: mode === 'development',
                     hmr: mode === 'development',
                     preserveComments: mode === 'development',
                     preserveWhitespace: mode === 'development',
                     modernAst: true
                 },
-                inspector: mode === 'development',
-                preprocess: [
-                    sveltePreprocess({
-                        sourceMap: true,
-                        typescript: {
-                            tsconfigDirectory: path.resolve(
-                                __dirname,
-                                './src/ts/'
-                            ),
-                            tsconfigFile: path.resolve(
-                                __dirname,
-                                './src/ts/tsconfig.json'
-                            )
-                        },
-                        scss: {
-                            linefeed: 'lf',
-                            indentWidth: 4,
-                            indentType: 'space',
-                            outputStyle:
-                                mode !== 'development' ? 'compressed' : (
-                                    'expanded'
-                                ),
-                            quietDeps: true,
-                            sourceMapEmbed: mode === 'development',
-                            sourceMap: true,
-                            omitSourceMapUrl: mode !== 'development',
-                            sourceMapContents: true
-                        }
-                    })
-                ]
+                inspector: mode === 'development'
             }),
             replacePlugin({
                 preventAssignment: true,
