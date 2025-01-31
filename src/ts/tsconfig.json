@@ -1,12 +1,13 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "exactOptionalPropertyTypes": false,
         "noEmit": false,
-        "types": []
+        "types": [],
+        "verbatimModuleSyntax": true
     },
     "include": [
         "./*.ts",
-        "./**/*.ts"
+        "./**/*.ts",
+        "./**/*.svelte"
     ]
 }
