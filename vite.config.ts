@@ -6,7 +6,6 @@ import os from 'node:os';
 import path from 'node:path';
 
 //-- NPM Packages
-import {svelte} from '@sveltejs/vite-plugin-svelte';
 import replacePlugin from '@rollup/plugin-replace';
 import {type ViteUserConfig, defineConfig} from 'vitest/config';
 
@@ -17,7 +16,7 @@ const config = defineConfig(({mode}) => {
     const conf: ViteUserConfig = {
         mode,
         resolve: {
-            extensions: ['.svelte', '.ts', '.js']
+            extensions: ['.ts', '.js']
         },
         base: mode !== 'development' ? '/nuclearcraft-solver/' : '/',
         build: {
@@ -61,17 +60,6 @@ const config = defineConfig(({mode}) => {
             }
         },
         plugins: [
-            svelte({
-                compilerOptions: {
-                    runes: true,
-                    dev: mode === 'development',
-                    hmr: mode === 'development',
-                    preserveComments: mode === 'development',
-                    preserveWhitespace: mode === 'development',
-                    modernAst: true
-                },
-                inspector: mode === 'development'
-            }),
             replacePlugin({
                 preventAssignment: true,
                 values: {
