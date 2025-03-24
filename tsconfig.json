@@ -31,7 +31,6 @@
         "pretty": true,
         "removeComments": true,
         "resolveJsonModule": false,
-        "sourceMap": false,
         "strict": true,
         "strictBindCallApply": true,
         "strictFunctionTypes": true,
@@ -39,14 +38,9 @@
         "strictPropertyInitialization": true,
         "suppressExcessPropertyErrors": false,
         "suppressImplicitAnyIndexErrors": false,
-        "target": "ES6",
-        "types": [
-            "node"
-        ],
+        "target": "ES2022",
         "useDefineForClassFields": true,
         "useUnknownInCatchVariables": true
     },
-    "exclude": [
-        "node_modules"
-    ]
+    "exclude": ["node_modules"]
 }
