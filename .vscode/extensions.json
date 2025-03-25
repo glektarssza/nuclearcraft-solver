@@ -6,6 +6,7 @@
         "editorconfig.editorconfig",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "vitest.explorer"
+        "vitest.explorer",
+        "styled-components.vscode-styled-components"
     ]
 }
