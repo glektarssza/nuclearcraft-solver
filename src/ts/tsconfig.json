@@ -5,5 +5,5 @@
         "noEmit": false,
         "types": []
     },
-    "include": ["./*.ts", "./**/*.ts"]
+    "include": ["./*.tsx", "./**/*.tsx", "./*.ts", "./**/*.ts"]
 }
