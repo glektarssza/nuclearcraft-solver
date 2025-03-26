@@ -19,6 +19,14 @@ const config = defineConfig(({mode}) => {
             extensions: ['.tsx', '.ts', '.jsx', '.js']
         },
         base: mode !== 'development' ? '/nuclearcraft-solver/' : '/',
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    api: 'modern-compiler',
+                    quietDeps: true
+                }
+            }
+        },
         build: {
             outDir: path.resolve(import.meta.dirname, './dist/'),
             minify: mode !== 'development',
