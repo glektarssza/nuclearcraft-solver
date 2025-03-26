@@ -59,7 +59,9 @@
         "rebuild:dev": "pnpm run clean:dev && pnpm run build:dev"
     },
     "dependencies": {
+        "bootstrap": "^5.3.3",
         "react": "^19.0.0",
+        "react-bootstrap": "^2.10.9",
         "react-dom": "^19.0.0",
         "styled-components": "^6.1.16"
     },
@@ -69,11 +71,13 @@
         "@rollup/plugin-replace": "^6.0.2",
         "@types/node": "^22.13.13",
         "@types/react": "^19.0.12",
+        "@types/react-bootstrap": "^0.32.37",
         "@types/react-dom": "^19.0.4",
         "@types/styled-components": "^5.1.34",
         "@vitest/browser": "^3.0.9",
         "@vitest/coverage-istanbul": "^3.0.9",
         "@vitest/ui": "^3.0.9",
+        "bootstrap-icons": "^1.11.3",
         "del-cli": "^6.0.0",
         "eslint": "^9.23.0",
         "eslint-config-prettier": "^10.1.1",
