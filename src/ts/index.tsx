@@ -1,5 +1,9 @@
+//-- NPM Packages
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+
+//-- Project Code
+import App from './components/app';
 
 /**
  * Find the root HTML element for the application.
@@ -20,4 +24,4 @@ function findRootElement(): HTMLElement {
 
 const root = createRoot(findRootElement());
 
-root.render(<h1>Hello world!</h1>);
+root.render(<App />);
