@@ -24,7 +24,6 @@ export const Navbar: FunctionComponent<NavbarProps> = () => {
                     <BsNav className='me-auto'>
                         <BsNav.Link href='#/home'>Home</BsNav.Link>
                         <BsNav.Link href='#/solver'>Solver</BsNav.Link>
-                        <BsNav.Link href='#/settings'>Settings</BsNav.Link>
                     </BsNav>
                     <BsNav>
                         <BsNav.Link href='#/settings'>

@@ -57,3 +57,4 @@ node_modules/
 coverage/
 dist/
 __screenshots__/
+.react-router/

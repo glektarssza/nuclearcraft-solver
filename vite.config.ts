@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 //-- NPM Packages
+import {reactRouter} from '@react-router/dev/vite';
 import replacePlugin from '@rollup/plugin-replace';
 import {type ViteUserConfig, defineConfig} from 'vitest/config';
 
@@ -73,7 +74,8 @@ const config = defineConfig(({mode}) => {
                 values: {
                     FAKER_SEED: JSON.stringify(process.env['FAKER_SEED'])
                 }
-            })
+            }),
+            reactRouter()
         ]
     };
     return conf;

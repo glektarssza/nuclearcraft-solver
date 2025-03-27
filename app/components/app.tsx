@@ -1,5 +1,5 @@
 //-- NPM Packages
-import React, {type FunctionComponent} from 'react';
+import React, {Fragment, type FunctionComponent} from 'react';
 
 //-- Project Code
 import Navbar from './navbar';
@@ -13,7 +13,11 @@ export type AppProps = object;
  * The root application component.
  */
 export const App: FunctionComponent<AppProps> = () => {
-    return <Navbar />;
+    return (
+        <Fragment>
+            <Navbar />
+        </Fragment>
+    );
 };
 
 export default App;
