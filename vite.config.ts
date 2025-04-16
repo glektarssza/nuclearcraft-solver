@@ -25,6 +25,18 @@ const config = defineConfig(({mode}) => {
             sourcemap: mode !== 'development' ? 'hidden' : true,
             emptyOutDir: true
         },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    api: 'modern-compiler',
+                    quietDeps: true
+                },
+                sass: {
+                    api: 'modern-compiler',
+                    quietDeps: true
+                }
+            }
+        },
         test: {
             alias: {
                 '@src': path.resolve(import.meta.dirname, './src/ts/')
@@ -62,6 +74,7 @@ const config = defineConfig(({mode}) => {
         plugins: [
             replacePlugin({
                 preventAssignment: true,
+                sourceMap: mode !== 'development' ? false : true,
                 values: {
                     FAKER_SEED: JSON.stringify(process.env['FAKER_SEED'])
                 }
