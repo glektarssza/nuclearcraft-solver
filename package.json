@@ -63,7 +63,7 @@
         "react-dom": "^19.1.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.24.0",
+        "@eslint/js": "^9.25.1",
         "@faker-js/faker": "^9.7.0",
         "@rollup/plugin-replace": "^6.0.2",
         "@types/node": "^22.14.1",
