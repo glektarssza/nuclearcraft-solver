@@ -8,7 +8,7 @@ updates:
     schedule:
       interval: weekly
       day: wednesday
-      time: "12:00"
+      time: '12:00'
       timezone: Canada/Mountain
   - directory: /
     package-ecosystem: github-actions
@@ -17,5 +17,5 @@ updates:
     schedule:
       interval: weekly
       day: wednesday
-      time: "12:00"
+      time: '12:00'
       timezone: Canada/Mountain
