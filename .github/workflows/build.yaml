@@ -26,7 +26,7 @@ on:
 
           Defaults to `true`.
         type: boolean
-        required: true
+        required: false
         default: true
       artifact-retention-days:
         description: |
@@ -35,7 +35,7 @@ on:
           Defaults to `0` which defaults to the number configured in the
           repository.
         type: number
-        required: true
+        required: false
         default: 0
     outputs:
       artifact-id:
