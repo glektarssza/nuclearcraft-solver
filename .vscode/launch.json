@@ -16,6 +16,14 @@
             "url": "http://localhost:5173",
             "webRoot": "${workspaceFolder}",
             "preLaunchTask": "pnpm:dev"
+        },
+        {
+            "name": "Launch Edge Debugging Tools",
+            "request": "launch",
+            "type": "vscode-edge-devtools.debug",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": "pnpm:dev"
         }
     ]
 }
