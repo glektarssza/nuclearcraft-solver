@@ -96,7 +96,7 @@ jobs:
               echo "build-script=build:prod" >> "$GITHUB_OUTPUT";
             ;;
             *)
-              echo "::error::Unknown build configuration '${{inputs.build-config}}'\!";
+              echo "::error::Unknown build configuration '${{inputs.build-config}}'!";
               exit 1;
             ;;
           esac
