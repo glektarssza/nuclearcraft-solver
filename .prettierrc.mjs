@@ -1,28 +1,28 @@
 export default {
-    arrowParens: "always",
+    arrowParens: 'always',
     bracketSameLine: true,
     bracketSpacing: false,
-    endOfLine: "lf",
-    embeddedLanguageFormatting: "auto",
+    endOfLine: 'lf',
+    embeddedLanguageFormatting: 'auto',
     experimentalTernaries: true,
-    htmlWhitespaceSensitivity: "css",
+    htmlWhitespaceSensitivity: 'css',
     jsxSingleQuote: true,
     overrides: [
         {
-            files: ["*.{yml,yaml}"],
+            files: ['*.{yml,yaml}'],
             options: {
-                tabWidth: 2,
-            },
-        },
+                tabWidth: 2
+            }
+        }
     ],
     printWidth: 80,
-    proseWrap: "preserve",
-    quoteProps: "as-needed",
+    proseWrap: 'preserve',
+    quoteProps: 'as-needed',
     semi: true,
     singleAttributePerLine: false,
     singleQuote: true,
-    trailingComma: "none",
+    trailingComma: 'none',
     useTabs: false,
     tabWidth: 4,
-    vueIndentScriptAndStyle: true,
+    vueIndentScriptAndStyle: true
 };
