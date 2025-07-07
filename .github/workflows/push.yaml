@@ -9,8 +9,8 @@ jobs:
       fail-fast: true
       matrix:
         build-config:
-          - dev
-          - prod
+          - development
+          - production
     uses: ./.github/workflows/build.yaml
     secrets:
       github-token: ${{secrets.GITHUB_TOKEN}}
