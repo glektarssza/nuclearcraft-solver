@@ -71,7 +71,7 @@
         "eslint-plugin-tsdoc": "^0.4.0",
         "playwright": "^1.55.0",
         "prettier": "^3.6.2",
-        "sass-embedded": "^1.89.2",
+        "sass-embedded": "^1.92.0",
         "tsx": "^4.20.3",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.40.0",
